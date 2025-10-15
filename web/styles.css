@@ -1,0 +1,46 @@
+:root{
+  --bg: #0b0f14;
+  --panel: #121825;
+  --text: #e7ecf3;
+  --muted: #9aa7b2;
+  --accent: #8b5cf6;
+  --accent2: #22d3ee;
+  --rose: #ff4d6d;
+  --btn: linear-gradient(135deg, var(--accent), var(--accent2));
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color:var(--text); background:radial-gradient(1200px 700px at 20% 0%, #101827, var(--bg));
+  display:flex; align-items:center; justify-content:center;
+}
+.container{width:min(1100px, 94vw);} 
+header{ text-align:center; margin:24px 0 8px }
+h1{ margin:0; font-size:clamp(28px, 6vw, 54px); letter-spacing:0.5px; background:linear-gradient(90deg, #fff, #ffd0dc, #e0b3ff); -webkit-background-clip:text; background-clip:text; color:transparent }
+.subtitle{ color:#ffd0dc; margin:8px 0 0; font-size:clamp(14px, 2.6vw, 18px) }
+.hero{ margin: 24px 0 12px }
+.controls{ display:flex; flex-direction:column; align-items:center; gap:10px; margin:10px 0 }
+.primary{
+  appearance:none; border:0; color:white; font-weight:600; letter-spacing:.3px;
+  padding:16px 26px; border-radius:16px; background:linear-gradient(135deg, #ff6b8b, #9b5cf6); cursor:pointer;
+  box-shadow: 0 10px 30px rgba(139,92,246,.25), inset 0 1px 0 rgba(255,255,255,.2);
+  transition: transform .08s ease, box-shadow .2s ease;
+}
+.primary:hover{ transform: translateY(-1px); box-shadow: 0 16px 32px rgba(34,211,238,.25), inset 0 1px 0 rgba(255,255,255,.25) }
+.primary:active{ transform: translateY(1px) }
+.hints{ color:var(--muted); font-size:14px }
+.stage{ background:linear-gradient(180deg, #0e1320, #0b0f14); border-radius:16px; padding:10px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06) }
+canvas{ width:100%; height:auto; display:block; border-radius:12px; background:#000 }
+footer{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:12px 0 }
+.status{ color:var(--muted) }
+.controls-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
+.controls-row.compact{ margin-left:auto }
+input[type="range"]{ accent-color: var(--accent); }
+button{ background:#1f2937; color:#dbe3ec; border:1px solid rgba(255,255,255,.08); padding:8px 12px; border-radius:8px; cursor:pointer }
+button:hover{ background:#243041 }
+
+@media (max-width: 640px){
+  footer{ flex-direction:column; align-items:flex-start }
+  .controls-row{ width:100%; justify-content:space-between }
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Florecer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="hero">
+        <h1>Florecer</h1>
+        <p class="subtitle">Haz clic y deja que esta rosa florezca por ti 🌹✨</p>
+      </header>
+
+      <div class="controls">
+        <button id="startBtn" class="primary">💖 Haz clic para que florezca</button>
+      </div>
+
+      <section class="stage">
+        <canvas id="stage" width="960" height="640" aria-label="Lienzo de dibujo"></canvas>
+      </section>
+
+      <footer>
+        <div class="status" id="status">Cargando rosa…</div>
+        <div class="controls-row compact">
+          <label>Velocidad <input id="speed" type="range" min="1" max="200" value="80" /></label>
+        </div>
+      </footer>
+    </main>
+    <script src="main.js"></script>
+  </body>
+  </html>
