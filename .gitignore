@@ -1,0 +1,27 @@
+# Python caches and environments
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+env/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Editors/IDEs
+.vscode/
+.idea/
+
+# Web temporary assets
+web/resources/*.tmp
