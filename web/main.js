@@ -94,7 +94,7 @@ function polyArea(pts){
   return Math.abs(s)*0.5;
 }
 
-function fitAndProject(regs, canvas, marginRatio){
+function fitAndProject(regs, size, marginRatio){
   // bbox datos
   const xs=[]; const ys=[];
   regs.forEach(r=> r.contour.forEach(([x,y])=>{ xs.push(x); ys.push(y); }));
@@ -105,7 +105,8 @@ function fitAndProject(regs, canvas, marginRatio){
   const cx=(minX+maxX)/2, cy=(minY+maxY)/2;
 
   // área segura en canvas
-  const cw=canvas.width, ch=canvas.height;
+  // Usar dimensiones en CSS px para que coincidan con el sistema tras setTransform(ratio,...)
+  const cw=size.width, ch=size.height;
   const safeW=cw*(1-2*marginRatio);
   const safeH=ch*(1-2*marginRatio);
   const scaleFit=Math.min(safeW/dataW, safeH/dataH)*0.995;
@@ -178,7 +179,8 @@ function handleJSON(jsonText){
     // Orden por área (grandes primero)
     regions.sort((a,b)=> polyArea(b.contour)-polyArea(a.contour));
     const m = getMarginRatio(); // slider 0..30 -> 0..0.3 (default 0.10 if missing)
-    screenPolys = fitAndProject(regions, els.canvas, m);
+    const cssSize = getCanvasCSSSize();
+    screenPolys = fitAndProject(regions, cssSize, m);
     startAnimation();
   }catch(err){
     console.error(err);
@@ -239,7 +241,8 @@ if(els.margin){
   els.margin.addEventListener('input', ()=>{
     if(!regions.length) return;
     const m = getMarginRatio();
-    screenPolys = fitAndProject(regions, els.canvas, m);
+    const cssSize = getCanvasCSSSize();
+    screenPolys = fitAndProject(regions, cssSize, m);
     startAnimation();
   });
 }
@@ -254,6 +257,11 @@ if(els.finishBtn){
   });
 }
 
+function getCanvasCSSSize(){
+  const rect = els.canvas.getBoundingClientRect();
+  return { width: Math.round(rect.width), height: Math.round(rect.height) };
+}
+
 // Responsive: redibujar al cambiar tamaño visual (ajusta tamaño real del canvas)
 function resizeCanvas(){
   const rect = els.canvas.getBoundingClientRect();
@@ -263,7 +271,8 @@ function resizeCanvas(){
   ctx.setTransform(ratio,0,0,ratio,0,0); // mantener CSS px como unidad
   if(regions.length){
     const m = getMarginRatio();
-    screenPolys = fitAndProject(regions, els.canvas, m);
+    const cssSize = { width: Math.round(rect.width), height: Math.round(rect.height) };
+    screenPolys = fitAndProject(regions, cssSize, m);
     startAnimation();
   } else {
     clearCanvas();
