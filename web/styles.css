@@ -17,7 +17,7 @@ body{
 }
 .container{width:min(1100px, 94vw);} 
 header{ text-align:center; margin:24px 0 8px }
-h1{ margin:0; font-size:clamp(28px, 6vw, 54px); letter-spacing:0.5px; background:linear-gradient(90deg, #fff, #ffd0dc, #e0b3ff); -webkit-background-clip:text; background-clip:text; color:transparent }
+h1{ margin:0; font-size: 2rem; letter-spacing:0.5px; background:linear-gradient(90deg, #fff, #ffd0dc, #e0b3ff); -webkit-background-clip:text; background-clip:text; color:transparent }
 .subtitle{ color:#ffd0dc; margin:8px 0 0; font-size:clamp(14px, 2.6vw, 18px) }
 .hero{ margin: 24px 0 12px }
 .controls{ display:flex; flex-direction:column; align-items:center; gap:10px; margin:10px 0 }
