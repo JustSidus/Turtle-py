@@ -95,11 +95,16 @@ function polyArea(pts){
 }
 
 function fitAndProject(regs, size, marginRatio){
-  // bbox datos
-  const xs=[]; const ys=[];
-  regs.forEach(r=> r.contour.forEach(([x,y])=>{ xs.push(x); ys.push(y); }));
-  const minX=Math.min(...xs), maxX=Math.max(...xs);
-  const minY=Math.min(...ys), maxY=Math.max(...ys);
+  // bbox datos - evitar spread operator con arrays enormes
+  let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+  for(const r of regs){
+    for(const [x,y] of r.contour){
+      if(x<minX) minX=x;
+      if(x>maxX) maxX=x;
+      if(y<minY) minY=y;
+      if(y>maxY) maxY=y;
+    }
+  }
   const dataW=Math.max(1e-9, maxX-minX);
   const dataH=Math.max(1e-9, maxY-minY);
   const cx=(minX+maxX)/2, cy=(minY+maxY)/2;
@@ -119,13 +124,22 @@ function fitAndProject(regs, size, marginRatio){
   }
 
   // proyectar a pantalla
-  const projected = regs.map(r=>{
-    const pts = r.contour.map(([x,y])=> toCanvasXY(x,y));
+  const projected = [];
+  for(const r of regs){
+    const pts = [];
+    for(const [x,y] of r.contour){
+      pts.push(toCanvasXY(x,y));
+    }
     // quitar duplicados consecutivos (evita dientes)
     const dedup=[]; let last=null;
-    for(const p of pts){ if(!last || p[0]!==last[0] || p[1]!==last[1]){ dedup.push(p); last=p; } }
-    return { color: colorToHex(r.color), pts: dedup };
-  });
+    for(const p of pts){ 
+      if(!last || p[0]!==last[0] || p[1]!==last[1]){ 
+        dedup.push(p); 
+        last=p; 
+      } 
+    }
+    projected.push({ color: colorToHex(r.color), pts: dedup });
+  }
   return projected;
 }
 
@@ -175,12 +189,27 @@ function handleJSON(jsonText){
     // Acepta tanto [ {contour,...} ] como { regions: [ ... ] }
     const list = Array.isArray(data) ? data : (data && Array.isArray(data.regions) ? data.regions : null);
     if(!list) throw new Error('JSON no es una lista ni contiene regions[]');
+    
+    setStatus(`Procesando ${list.length} regiones...`);
+    
+    // Filtrar regiones válidas
     regions = list.filter(r=> Array.isArray(r.contour) && r.contour.length>=3);
-    // Orden por área (grandes primero)
-    regions.sort((a,b)=> polyArea(b.contour)-polyArea(a.contour));
+    
+    // Para JSONs muy grandes, cachear áreas para no recalcular
+    const areaCache = new Map();
+    for(const r of regions){
+      areaCache.set(r, polyArea(r.contour));
+    }
+    
+    // Orden por área (grandes primero) usando cache
+    regions.sort((a,b)=> areaCache.get(b) - areaCache.get(a));
+    
+    setStatus(`Proyectando ${regions.length} regiones...`);
     const m = getMarginRatio(); // slider 0..30 -> 0..0.3 (default 0.10 if missing)
     const cssSize = getCanvasCSSSize();
     screenPolys = fitAndProject(regions, cssSize, m);
+    
+    setStatus(`Listo para dibujar ${screenPolys.length} polígonos`);
     startAnimation();
   }catch(err){
     console.error(err);
@@ -216,20 +245,20 @@ els.bloomBtn.addEventListener('click', async ()=>{
   if(isFileProtocol()){
     setStatus('Estás abriendo el archivo localmente (file://). Sirve la carpeta web con un servidor HTTP para que la carga funcione.');
   }
-  setStatus('Cargando rosa…');
+  setStatus('Cargando girasoles…');
   try{
     // recursos ahora dentro de /web/resources
     const candidates = [
-      './resources/rosas.json',
-      'resources/rosas.json',
-      './rosas.json',
-      '../resources/rosas.json'
+      './resources/sunflowers.json',
+      'resources/sunflowers.json',
+      './sunflowers.json',
+      '../resources/sunflowers.json'
     ];
     const text = await fetchWithFallback(candidates);
     handleJSON(text);
   }catch(err){
-    console.error('No se pudo cargar rosas.json', err);
-    setStatus(`No se pudo cargar rosas.json. ${isFileProtocol() ? 'Abierto como file://; usa un servidor HTTP.' : ''} Detalle: ${err.message || err}`);
+    console.error('No se pudo cargar sunflowers.json', err);
+    setStatus(`No se pudo cargar sunflowers.json. ${isFileProtocol() ? 'Abierto como file://; usa un servidor HTTP.' : ''} Detalle: ${err.message || err}`);
   }
 });
 
