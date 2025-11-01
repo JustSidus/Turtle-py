@@ -1,4 +1,3 @@
-# Web: Florecer 🌹
 
 Pequeña app web que dibuja una rosa a partir de un JSON de regiones.
 
